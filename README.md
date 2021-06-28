@@ -32,6 +32,7 @@ CookBook
 Self-Test CookBook Using "ComposeTest"
 ------------------------------
 This ComposeTest will check that things work as expected.
+1. ensure that the first compose is completely ready.
 1. cd to composetest directory.
 2. run docker compose up -d.
 
