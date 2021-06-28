@@ -1,0 +1,97 @@
+  version: '3.9'
+
+  services:
+    nginx:
+      image: nginx:1.21
+      container_name: nginx
+      ports:
+        - "80:80"
+        - "443:443"
+      labels:
+        filebeat_enabled: "true"
+      volumes:
+          - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+          - ./nginx/nginx-selfsigned.crt:/etc/nginx/ssl/nginx-selfsigned.crt:ro
+          - ./nginx/nginx-selfsigned.key:/etc/nginx/ssl/nginx-selfsigned.key:ro
+          - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      
+    
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+      container_name: elasticsearch
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      environment:
+          ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+          ELASTIC_PASSWORD: $PASSWORD
+          discovery.type: single-node
+      volumes:
+          - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+          - data:/usr/share/elasticsearch/data
+      healthcheck:
+        test: curl -u elastic:$PASSWORD -s "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=50s&pretty" 
+        interval: 30s
+        timeout: 10s
+        retries: 5
+
+
+
+    
+    logstash:
+      image: docker.elastic.co/logstash/logstash:7.9.2
+      container_name: logstash
+      user: root
+      ports:
+        - "5044:5044"
+      environment:
+          LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+          PASSWORD: $PASSWORD
+      volumes: 
+          - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+          - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+          - /var/lib/docker:/var/lib/docker:ro
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+          - ./logstash/logstash.template.json:/usr/share/logstash/templates/logstash.template.json
+      depends_on: ['elasticsearch']
+
+    kibana:
+      image: docker.elastic.co/kibana/kibana:7.9.2
+      container_name: kibana
+      volumes: 
+          - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+      ports:  
+          - "5601:5601"
+      environment:
+        PASSWORD: $PASSWORD
+      depends_on: 
+        elasticsearch:
+          condition: service_healthy
+      healthcheck:
+        test: curl -u elastic:$PASSWORD -I "http://localhost:5601/app/home" 
+        interval: 30s
+        timeout: 10s
+        retries: 5
+
+    
+    filebeat:
+      image: docker.elastic.co/beats/filebeat:7.9.2
+      command: ["--strict.perms=false"]
+      container_name: filebeat
+      user: root
+      volumes:
+        - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+        - /var/lib/docker:/var/lib/docker:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    api:
+      build: ./api
+      container_name: api
+      environment:
+        PASSWORD: $PASSWORD
+      depends_on:
+        kibana:
+          condition: service_healthy
+
+  volumes:
+      data:
