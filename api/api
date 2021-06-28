@@ -1,0 +1,22 @@
+#!/bin/sh
+response=$(curl -u elastic:$PASSWORD -LI  "kibana:5601/api/saved_objects/index-pattern/my-pattern"  -o /dev/null -w '%{http_code}\n')
+
+if [ "$response" = 200 ]; then
+      echo "Index Pattern exists"
+      exit 0
+fi
+
+
+curl -u elastic:$PASSWORD -X POST "kibana:5601/api/saved_objects/index-pattern/my-pattern"  -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d '
+{
+  "attributes": {
+    "title": "logstash-*",
+    "timeFieldName": "@timestamp"
+  }
+   
+}'
+
+curl -X POST -u elastic:$PASSWORD kibana:5601/api/saved_objects/_import -H "kbn-xsrf: true" --form file=@/usr/local/bin/remote_ip_visualization.ndjson -H 'kbn-xsrf: true'
+
+echo "Index Pattern created"
+exit 0
