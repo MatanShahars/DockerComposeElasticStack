@@ -1,0 +1,22 @@
+{
+    "template": "logstash",
+    "index_patterns": [
+        "logstash-*"
+    ],
+    "settings": {
+        "number_of_shards": 1
+    },
+    "mappings": {
+        "properties": {
+            "remote_ip": { 
+                "type": "ip"
+            },
+
+            "@timestamp": {
+                "type":"date"
+            }
+        }
+
+        }
+        
+      }
