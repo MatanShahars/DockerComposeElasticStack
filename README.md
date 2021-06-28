@@ -24,7 +24,7 @@ CookBook
 2. cd to the root directory called "DockerComposeElasticStack-main".
 3. make sure your docker platform is running.
 4. run docker compose up -d.
-5. open kibana portal on "http://localhost:5601" or from inside the local compose network on "http://kibana:5601"
+5. open kibana portal on "http://localhost:5601" or from the local compose network on "http://kibana:5601"
 6. open the log view by choose the Discover section in the kibana menu.
 7. open the data table visualization by choose the visualize section in the kibana menu.
 5. Enjoy :)
@@ -36,7 +36,7 @@ This ComposeTest will check that things work as expected.
 2. run docker compose up -d.
 
 Two of the containers will access with https to nginx (on of them once, the second twice).
-Six of the containers will access by http to nginx (once to six times according to the environment variable configured to the container).
+Six of the containers will access with http to nginx (once to six times according to the environment variable configured on the container).
 
 We should see a large number of new hits in the "discover" section.
 Additionally, on the data table visualization we will see the top 5 IPs who tried to access to Nginx on http.
@@ -57,4 +57,5 @@ Let's Tag Some Versions!
 1. Filebeat,Logstash,ElasticSearch,Kibana: 7.9.2
 2. Nginx: 1.21
 3. Alpine: 3.14.0
+4. python:3.9.5-alpine3.13
 
