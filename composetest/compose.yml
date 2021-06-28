@@ -1,0 +1,81 @@
+version: '3.9'
+
+services:
+    testhttps1:
+        build: ./
+        container_name: https1
+        networks:
+            - dockercomposeelasticstack-main_default
+        environment: 
+            NUM_REQUESTS: 1
+            SSL: "true"
+    testhttps2:
+        build: ./
+        container_name: https2
+        networks:
+            - dockercomposeelasticstack-main_default
+        environment: 
+            NUM_REQUESTS: 2
+            SSL: "true"
+    
+
+
+    testhttp1:
+        build: ./
+        container_name: http1
+        networks:
+            - dockercomposeelasticstack-main_default
+        environment: 
+            NUM_REQUESTS: 1
+            SSL: "false"
+    
+    testhttp2:
+        build: ./
+        container_name: http2
+        networks:
+           - dockercomposeelasticstack-main_default
+        environment: 
+            NUM_REQUESTS: 2
+            SSL: "false"
+
+    testhttp3:
+        build: ./
+        container_name: http3
+        networks:
+            - dockercomposeelasticstack-main_default
+        environment: 
+            NUM_REQUESTS: 3
+            SSL: "false"
+
+
+    testhttp4:
+        build: ./
+        container_name: http4
+        networks:
+            - dockercomposeelasticstack-main_default
+        environment: 
+            NUM_REQUESTS: 4
+            SSL: "false"
+
+    testhttp5:
+        build: ./
+        container_name: http5
+        networks:
+            - dockercomposeelasticstack-main_default
+        environment: 
+            NUM_REQUESTS: 5
+            SSL: "false"
+
+    testhttp6:
+        build: ./
+        container_name: http6
+        networks:
+            - dockercomposeelasticstack-main_default
+        environment: 
+            NUM_REQUESTS: 6
+            SSL: "false"
+
+    
+networks:
+    dockercomposeelasticstack-main_default:
+        external: true
