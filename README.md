@@ -39,7 +39,7 @@ This ComposeTest will check that things work as expected.
 Two of the containers will access with https to nginx (on of them once, the second twice).
 Six of the containers will access with http to nginx (once to six times according to the environment variable configured on the container).
 
-We should see a large number of new hits in the "discover" section.
+We should see a large increase of new hits in the "discover" section.
 Additionally, on the data table visualization we will see the top 5 IPs who tried to access to Nginx on http.
 The sixth container is not shown on this table because it is a top 5 table.
 
