@@ -16,7 +16,9 @@ curl -u elastic:$PASSWORD -X POST "kibana:5601/api/saved_objects/index-pattern/m
    
 }'
 
+echo "Index Pattern created"
+
 curl -X POST -u elastic:$PASSWORD kibana:5601/api/saved_objects/_import -H "kbn-xsrf: true" --form file=@/usr/local/bin/remote_ip_visualization.ndjson -H 'kbn-xsrf: true'
 
-echo "Index Pattern created"
+echo "Visuralization created"
 exit 0
